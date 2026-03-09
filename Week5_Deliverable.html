@@ -322,7 +322,7 @@
             <span class="label">Date</span>        <span>February 18, 2026</span>
             <span class="label">Phase</span>       <span>Weeks 4–5: Exploration Gate (Decision Memo)</span>
             <!--<span class="label">Status</span>      <span><span class="badge badge-blue">In Progress</span></span>
-            <span class="label">Next Milestone</span><span>Week 11 — Model v1 trained &amp; evaluated</span>
+            <span class="label">Next Milestone</span><span>Week 11 , Model v1 trained &amp; evaluated</span>
             <span class="label">Author</span>      <span>Mitacs Research Team</span>-->
         </div>
     </div>
@@ -351,8 +351,8 @@
     <p>
         The goal of this Mitacs project is to build an end-to-end pipeline that converts
         user-uploaded dog videos into <strong>structured behavioral insights</strong>. The
-        system must identify observable behavioral primitives — activity vs. rest, movement
-        intensity, posture classification, and behavioral transitions — and expose them through
+        system must identify observable behavioral primitives , activity vs. rest, movement
+        intensity, posture classification, and behavioral transitions , and expose them through
         an inference API that integrates with the company's existing web application.
     </p>
 
@@ -383,7 +383,7 @@
     <!-- ══════════════════════════════════════════════
          2. EXPLORATION GATE RESULTS
     ══════════════════════════════════════════════ -->
-    <h2 id="exploration-results">2. Exploration Gate Results — Tracks A, B, C</h2>
+    <h2 id="exploration-results">2. Exploration Gate Results , Tracks A, B, C</h2>
 
     <p>
         Three prototype approaches were implemented and evaluated during Weeks 4–5. Below is
@@ -392,31 +392,31 @@
 
     <div class="track-grid">
         <div class="track-card track-a">
-            <div class="track-label" style="color:#6f42c1;">Track A — Pose-First</div>
+            <div class="track-label" style="color:#6f42c1;">Track A , Pose-First</div>
             <h4>Keypoints → Behavior</h4>
             <p style="font-size:10pt;">YOLOv8 detection → RTMPose/ViTPose keypoint extraction → LSTM temporal classifier over keypoint trajectories.</p>
             <ul>
                 <li>Interpretable, modular pipeline</li>
                 <li>Leverages StanfordExtra / AP-10K pose datasets</li>
-                <li><strong>Limitation:</strong> Remains low-level vision — sensitive to occlusion, breed morphology, and camera angle. Multi-stage error propagation makes the pipeline fragile in a large production pipeline where robustness is critical.</li>
+                <li><strong>Limitation:</strong> Remains low-level vision , sensitive to occlusion, breed morphology, and camera angle. Multi-stage error propagation makes the pipeline fragile in a large production pipeline where robustness is critical.</li>
             </ul>
-            <p style="margin-top:8px;"><span class="badge badge-yellow">Partial — Low-level only</span></p>
+            <p style="margin-top:8px;"><span class="badge badge-yellow">Partial , Low-level only</span></p>
         </div>
 
         <div class="track-card track-b">
-            <div class="track-label" style="color:#0056b3;">Track B — Video Classification</div>
+            <div class="track-label" style="color:#0056b3;">Track B , Video Classification</div>
             <h4>End-to-End Clip Model</h4>
             <p style="font-size:10pt;">X3D / SlowFast backbone with multi-head behavior classification heads, operating on 2–4 second clips.</p>
             <ul>
                 <li>Single-stage inference, captures subtle motion patterns</li>
-                <li>Demonstrated on single frames — results were <strong>promising</strong></li>
+                <li>Demonstrated on single frames , results were <strong>promising</strong></li>
                 <li><strong>Limitation:</strong> Data-hungry for fine-tuning; less interpretable; higher compute at inference time</li>
             </ul>
-            <p style="margin-top:8px;"><span class="badge badge-green">Good results — single frame demo</span></p>
+            <p style="margin-top:8px;"><span class="badge badge-green">Good results , single frame demo</span></p>
         </div>
 
         <div class="track-card track-c">
-            <div class="track-label" style="color:#fd7e14;">Track C — Hybrid Baseline</div>
+            <div class="track-label" style="color:#fd7e14;">Track C , Hybrid Baseline</div>
             <h4>Detection + Rules</h4>
             <p style="font-size:10pt;">YOLOv8 detection → ByteTrack tracking → optical flow / bounding-box velocity features → rule-based classifier.</p>
             <ul>
@@ -424,7 +424,7 @@
                 <li>Guaranteed end-to-end delivery baseline</li>
                 <li><strong>Limitation:</strong> Accuracy ceiling bounded by hand-crafted rules; coarse behavioral resolution only</li>
             </ul>
-            <p style="margin-top:8px;"><span class="badge badge-yellow">Solid baseline — limited ceiling</span></p>
+            <p style="margin-top:8px;"><span class="badge badge-yellow">Solid baseline , limited ceiling</span></p>
         </div>
     </div>
 
@@ -442,33 +442,33 @@
         <tbody>
             <tr>
                 <td><strong>Robustness</strong></td>
-                <td>Medium — sensitive to occlusion &amp; pose failure</td>
-                <td>Medium-High — end-to-end learned</td>
-                <td>High — rule-based, no data dependency</td>
+                <td>Medium , sensitive to occlusion &amp; pose failure</td>
+                <td>Medium-High , end-to-end learned</td>
+                <td>High , rule-based, no data dependency</td>
             </tr>
             <tr>
                 <td><strong>Behavioral richness</strong></td>
-                <td>Medium — locomotion &amp; posture</td>
-                <td>High — captures appearance + motion</td>
-                <td>Low — coarse motion stats only</td>
+                <td>Medium , locomotion &amp; posture</td>
+                <td>High , captures appearance + motion</td>
+                <td>Low , coarse motion stats only</td>
             </tr>
             <tr>
                 <td><strong>Data efficiency</strong></td>
-                <td>Medium — needs pose-labeled data</td>
-                <td>Low — needs clip-level behavior labels</td>
-                <td>High — zero-shot</td>
+                <td>Medium , needs pose-labeled data</td>
+                <td>Low , needs clip-level behavior labels</td>
+                <td>High , zero-shot</td>
             </tr>
             <tr>
                 <td><strong>Interpretability</strong></td>
-                <td>High — keypoints visible</td>
-                <td>Low — black-box features</td>
-                <td>High — rules are explicit</td>
+                <td>High , keypoints visible</td>
+                <td>Low , black-box features</td>
+                <td>High , rules are explicit</td>
             </tr>
             <tr>
                 <td><strong>Pipeline complexity</strong></td>
-                <td>High — multi-stage, error propagation</td>
-                <td>Medium — single model, needs fine-tune</td>
-                <td>Low — fast iteration</td>
+                <td>High , multi-stage, error propagation</td>
+                <td>Medium , single model, needs fine-tune</td>
+                <td>Low , fast iteration</td>
             </tr>
             <tr>
                 <td><strong>Production suitability</strong></td>
@@ -495,10 +495,10 @@
     <!-- ══════════════════════════════════════════════
          3. TRACK D
     ══════════════════════════════════════════════ -->
-    <h2 id="track-d">3. Track D — VLM Video Analyzer (Prototype 4)</h2>
+    <h2 id="track-d">3. Track D , VLM Video Analyzer (Prototype 4)</h2>
 
     <p>
-        In parallel with the exploration gate, a fourth prototype — <strong>Track D</strong> —
+        In parallel with the exploration gate, a fourth prototype , <strong>Track D</strong> ,
         was developed as a starting point for the Track C direction taken to its logical
         conclusion: using a Vision-Language Model (VLM) to perform rich behavioral assessment
         directly from video frames. This is <em>Prototype 4</em> of the system and serves as
@@ -532,7 +532,7 @@
     <!-- ══════════════════════════════════════════════
          4. PROPOSED ARCHITECTURE
     ══════════════════════════════════════════════ -->
-    <h2 id="proposed-architecture">4. Proposed Architecture — Three-Layer Video Analyzer</h2>
+    <h2 id="proposed-architecture">4. Proposed Architecture , Three-Layer Video Analyzer</h2>
 
     <p>
         Based on the exploration gate findings, the proposed forward architecture is a
@@ -583,7 +583,7 @@
         </div>
     </div>
 
-    <h3>4.1 Layer 1 — Low-Level Vision Detail</h3>
+    <h3>4.1 Layer 1 , Low-Level Vision Detail</h3>
     <p>
         This layer is responsible for <em>isolating the subject</em> and computing
         <em>motion-level primitives</em> without needing a VLM call. It provides:
@@ -592,11 +592,11 @@
         <li><strong>Dog detection:</strong> YOLOv8-nano/small for fast bounding-box detection on every frame</li>
         <li><strong>Dog crop:</strong> Padded crop of the dog region passed to subsequent layers, reducing noise from background</li>
         <li><strong>Motion score:</strong> Per-frame optical flow magnitude or frame-difference score within the dog bounding box</li>
-        <li><strong>Activity state:</strong> Thresholded classification — stationary / low motion / high motion</li>
+        <li><strong>Activity state:</strong> Thresholded classification , stationary / low motion / high motion</li>
         <li><strong>Rough posture proxy:</strong> Bounding box aspect ratio as a proxy for standing vs. lying (fast heuristic, not a trained model)</li>
     </ul>
 
-    <h3>4.2 Layer 2 — Decision Engine Detail</h3>
+    <h3>4.2 Layer 2 , Decision Engine Detail</h3>
     <p>
         The decision engine controls <em>when</em> to invoke the expensive VLM layer and
         <em>what context</em> to supply. Key logic:
@@ -608,7 +608,7 @@
         <li>Prepends motion context to the VLM prompt: <em>"The dog is currently moving at high intensity. Focus on gait, weight distribution, and any signs of discomfort."</em></li>
     </ul>
 
-    <h3>4.3 Layer 3 — VLM Analysis Detail</h3>
+    <h3>4.3 Layer 3 , VLM Analysis Detail</h3>
     <p>
         The VLM receives the dog crop (not the full frame) plus a context-enriched prompt and
         returns a structured JSON response conforming to the schema already established in
@@ -678,7 +678,7 @@
         <li><strong>Breed identification:</strong> Breed, confidence, approximate age, size category</li>
     </ul>
 
-    <h3>5.3 What to Extract — Current State &amp; Exploration Areas</h3>
+    <h3>5.3 What to Extract , Current State &amp; Exploration Areas</h3>
     <p>
         The current Track D output schema covers seven behavioral categories effectively for
         single-dog welfare assessment. However, the optimal set of signals to extract and
@@ -744,7 +744,7 @@
     ══════════════════════════════════════════════ -->
     <h2 id="spec-sheet">6. Specification Sheet &amp; Tech Stack</h2>
 
-    <h3>6.1 Layer 1 — Low-Level Vision Spec</h3>
+    <h3>6.1 Layer 1 , Low-Level Vision Spec</h3>
 
     <div class="spec-section">
         <h4>Component Specifications</h4>
@@ -782,7 +782,7 @@
         </table>
     </div>
 
-    <h3>6.2 Layer 2 — Decision Engine Spec</h3>
+    <h3>6.2 Layer 2 , Decision Engine Spec</h3>
 
     <div class="spec-section">
         <h4>Adaptive Sampling Parameters</h4>
@@ -801,7 +801,7 @@
         </table>
     </div>
 
-    <h3>6.3 Layer 3 — VLM Analysis Spec</h3>
+    <h3>6.3 Layer 3 , VLM Analysis Spec</h3>
 
     <div class="spec-section">
         <h4>Current vs. Target Models</h4>
@@ -813,11 +813,11 @@
                 <tr>
                     <td><strong>Development (current)</strong></td>
                     <td>Qwen2.5-VL-7B (via Ollama, local)</td>
-                    <td>Indicative — sufficient for prototype validation</td>
+                    <td>Indicative , sufficient for prototype validation</td>
                     <td>Consumer GPU / CPU</td>
                 </tr>
                 <tr>
-                    <td><strong>Target — Server (production)</strong></td>
+                    <td><strong>Target , Server (production)</strong></td>
                     <td>Qwen2.5-VL-72B <em>or</em> LLaVA-1.6-34B <em>or</em> fine-tuned specialist VLM</td>
                     <td>Production-grade behavioral assessment</td>
                     <td>A100 / H100 GPU server</td>
@@ -1132,7 +1132,7 @@
          FOOTER
     ══════════════════════════════════════════════ -->
     <!--<div class="doc-footer">
-      <p>Dog Behavior Understanding System — Week 5 Deliverable &nbsp;|&nbsp; Mitacs Research Project &nbsp;|&nbsp; February 2026</p>
+      <p>Dog Behavior Understanding System , Week 5 Deliverable &nbsp;|&nbsp; Mitacs Research Project &nbsp;|&nbsp; February 2026</p>
       <p style="margin-top:4px;">Generated from Track D prototype (Prototype 4) | Active codebase: <code>MitacsWeek4Deliverable/</code></p>
     </div>
 

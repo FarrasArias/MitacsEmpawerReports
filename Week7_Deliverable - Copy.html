@@ -741,7 +741,67 @@ t=14 s &nbsp;<span class="s-skip">skip</span> &nbsp; motion=0.133, static, inter
                     │    tables        │
                     └──────────────────┘</div>
 
+<h3>6.1 Component Responsibilities</h3>
 
+<div class="cloud-grid">
+  <div class="cloud-card">
+    <h4>FastAPI (HTTP Layer)</h4>
+    <ul>
+      <li>Accept video upload or S3 presigned URL</li>
+      <li>Write video bytes to Supabase Storage</li>
+      <li>Publish SQS job message with <code>video_s3_uri</code></li>
+      <li>Return <code>job_id</code> to client; client polls <code>GET /jobs/{id}</code></li>
+      <li>Serve completed results from Postgres</li>
+      <li><strong>Code change needed:</strong> ~60 lines in new <code>pipeline/api.py</code></li>
+    </ul>
+  </div>
+  <div class="cloud-card">
+    <h4>AWS SQS Job Queue</h4>
+    <ul>
+      <li>Decouples HTTP tier from GPU-bound processing</li>
+      <li>Handles back-pressure: workers consume at their own pace</li>
+      <li>Message visibility timeout = <code>REQUEST_TIMEOUT × max_frames</code></li>
+      <li>Dead-letter queue for failed jobs (retry cap = 3)</li>
+      <li><strong>Cost:</strong> SQS Standard ~$0.40 / million messages</li>
+    </ul>
+  </div>
+  <div class="cloud-card">
+    <h4>Pipeline Worker (GPU EC2 / ECS)</h4>
+    <ul>
+      <li>Polls SQS, downloads video from S3, calls <code>run_pipeline()</code></li>
+      <li>Inserts <code>PipelineOutput</code> dict into Supabase Postgres</li>
+      <li>Deletes SQS message on success; lets it reappear on failure</li>
+      <li><strong>Code change needed:</strong> ~80 lines in new <code>pipeline/worker.py</code></li>
+      <li>Recommended instance: g4dn.xlarge (T4 GPU, 16 GB VRAM) for 7B model; g5.12xlarge (4×A10G) for 72B</li>
+    </ul>
+  </div>
+  <div class="cloud-card">
+    <h4>vLLM Inference Server</h4>
+    <ul>
+      <li>OpenAI-compatible API at <code>/v1/chat/completions</code></li>
+      <li><strong>Pipeline change needed:</strong> replace 5 lines inside <code>VLMAnalyzer._call_backend()</code> , no other module changes</li>
+      <li>Supports continuous batching → much higher throughput than Ollama at scale</li>
+      <li>Recommended: separate GPU instance from worker (avoids VRAM contention)</li>
+    </ul>
+  </div>
+  <div class="cloud-card">
+    <h4>Supabase Storage</h4>
+    <ul>
+      <li>Raw video upload bucket (private, presigned URLs)</li>
+      <li>HTML report bucket (optionally public per-job)</li>
+      <li>No code changes , storage client wraps standard S3-compatible API</li>
+    </ul>
+  </div>
+  <div class="cloud-card">
+    <h4>Supabase Postgres</h4>
+    <ul>
+      <li><code>jobs</code> table: <code>job_id, status, video_uri, created_at, completed_at, error</code></li>
+      <li><code>analyses</code> table: one row per video , stores full <code>PipelineOutput</code> JSON in a <code>jsonb</code> column</li>
+      <li><code>frames</code> table (optional normalized): one row per analyzed frame for SQL-queryable behavioral timelines</li>
+      <li>Row-level security: jobs scoped to user_id</li>
+    </ul>
+  </div>
+</div>
 
 <h3>6.2 What the Client Needs to Prepare (Weeks 8–11)</h3>
 
@@ -882,9 +942,9 @@ t=14 s &nbsp;<span class="s-skip">skip</span> &nbsp; motion=0.133, static, inter
   <p><strong>Q2: What is the minimum acceptable VLM latency for the product UX?</strong> , Current 7B/Ollama performance is ~1–2 minutes per video, which is acceptable for a "submit and return later" async flow. If the product requires near-real-time feedback (&lt;30 s), vLLM with continuous batching on a larger GPU becomes a hard requirement, not a future optimization.</p>
 </div>
 
-<!--<div class="question-item">
+<div class="question-item">
   <p><strong>Q3: Should behavioral outputs be smoothed temporally before being shown to users?</strong> , Currently each frame is assessed independently. A tag that appears for one frame and disappears may confuse users. EMA smoothing (α=0.3 across consecutive analyzed frames) is already scoped , the question is whether it should be applied at the pipeline level or as a post-processing step in the product layer.</p>
-</div>-->
+</div>
 
 <div class="question-item">
   <p><strong>Q4: How should the annotation pipeline be structured at scale?</strong> , 200–400 frames is sufficient for v1 evaluation. If fine-tuning requires 2,000+ labeled frames, a formal annotation pipeline (CVAT + inter-rater agreement protocol + veterinary review) needs to be scoped and resourced. This is the primary risk to the Week 15–17 fine-tuning milestone.</p>
@@ -894,9 +954,9 @@ t=14 s &nbsp;<span class="s-skip">skip</span> &nbsp; motion=0.133, static, inter
   <p><strong>Q5: What is the data retention and privacy policy for uploaded dog videos?</strong> , The pipeline processes video on the server side. The client needs to define: how long raw videos are stored (Supabase Storage), whether processed frames are retained, and whether videos are used for model training. This affects Supabase storage costs and any applicable privacy regulations.</p>
 </div>
 
-<!--<div class="question-item">
+<div class="question-item">
   <p><strong>Q6: Multi-dog scenes , is this in scope before Week 17?</strong> , Current policy: take the highest-confidence YOLO detection and ignore others. This is safe for v1 but will produce incorrect results if two dogs are in frame and the wrong one is analyzed. Resolving this requires ByteTrack integration (tracking individual dogs across frames). Recommend keeping out of scope until the single-dog pipeline is validated and deployed.</p>
-</div>-->
+</div>
 
 
 <!-- ══════════════════════════════════════════════
